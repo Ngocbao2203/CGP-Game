@@ -3,11 +3,486 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Craft Farm</title>
+    <title>⚡ Craft Farm - Future Farming ⚡</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Exo 2', sans-serif;
+        background: #0a0a0a;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+        color: #ffffff;
+      }
+
+      /* Cyberpunk grid background */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        animation: gridMove 20s linear infinite;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      @keyframes gridMove {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(50px, 50px); }
+      }
+
+      /* Glowing orbs */
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: float 6s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .orb1 {
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, #ff0080, transparent);
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .orb2 {
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, #00ff80, transparent);
+        top: 60%;
+        right: 15%;
+        animation-delay: -2s;
+      }
+
+      .orb3 {
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(circle, #8000ff, transparent);
+        bottom: 30%;
+        left: 70%;
+        animation-delay: -4s;
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) scale(1); opacity: 0.7; }
+        50% { transform: translateY(-30px) scale(1.1); opacity: 0.9; }
+      }
+
+      /* Header */
+      .header {
+        text-align: center;
+        padding: 40px 0;
+        position: relative;
+        z-index: 10;
+        background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 128, 0.1));
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      }
+
+      .header h1 {
+        font-family: 'Orbitron', monospace;
+        font-size: 3.5rem;
+        font-weight: 900;
+        background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff0080);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 3s ease-in-out infinite;
+        text-shadow: 0 0 30px rgba(255, 0, 128, 0.5);
+        margin-bottom: 15px;
+        letter-spacing: 3px;
+      }
+
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      .header p {
+        font-size: 1.3rem;
+        color: #00ffff;
+        font-weight: 300;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.9;
+      }
+
+      /* Main container */
+      #unity-container {
+        position: relative;
+        z-index: 10;
+        margin: 40px auto;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 20, 0.9));
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 1020px;
+        backdrop-filter: blur(20px);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #unity-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, #ff0080, #00ff80, #8000ff, #ff0080);
+        background-size: 300% 300%;
+        animation: borderGlow 4s ease-in-out infinite;
+        border-radius: 20px;
+        z-index: -1;
+        padding: 2px;
+      }
+
+      #unity-container::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        bottom: 2px;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0.9));
+        border-radius: 18px;
+        z-index: -1;
+      }
+
+      @keyframes borderGlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      .unity-desktop {
+        width: 960px;
+        height: auto;
+      }
+
+      .unity-mobile {
+        width: 100%;
+        height: auto;
+      }
+
+      #unity-canvas {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        border-radius: 15px;
+        box-shadow: 
+          0 0 50px rgba(0, 255, 255, 0.3),
+          inset 0 0 30px rgba(0, 0, 0, 0.5);
+        transition: all 0.5s ease;
+        border: 1px solid rgba(0, 255, 255, 0.5);
+      }
+
+      #unity-canvas:hover {
+        transform: scale(1.02);
+        box-shadow: 
+          0 0 70px rgba(0, 255, 255, 0.5),
+          inset 0 0 40px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Loading bar */
+      #unity-loading-bar {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 20px;
+        padding: 30px;
+        border: 2px solid #00ffff;
+        box-shadow: 
+          0 0 50px rgba(0, 255, 255, 0.5),
+          inset 0 0 20px rgba(0, 255, 255, 0.1);
+      }
+
+      #unity-logo {
+        width: 154px;
+        height: 130px;
+        background: linear-gradient(45deg, #ff0080, #00ff80);
+        border-radius: 15px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #000;
+        text-shadow: none;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+      }
+
+      #unity-logo::before {
+        content: "⚡ FARM ⚡";
+      }
+
+      #unity-progress-bar-empty {
+        width: 250px;
+        height: 15px;
+        margin: 15px auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 255, 255, 0.5);
+        position: relative;
+      }
+
+      #unity-progress-bar-full {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #ff0080, #00ff80, #8000ff);
+        background-size: 200% 100%;
+        animation: neonPulse 1.5s linear infinite;
+        border-radius: 8px;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+      }
+
+      @keyframes neonPulse {
+        0%, 100% { 
+          background-position: 0% 50%;
+          box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+        50% { 
+          background-position: 100% 50%;
+          box-shadow: 0 0 30px rgba(255, 0, 128, 0.8);
+        }
+      }
+
+      /* Warning banner */
+      #unity-warning {
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #unity-warning div {
+        padding: 15px;
+        margin: 5px 0;
+        border-radius: 8px;
+        font-weight: 600;
+        border-left: 4px solid;
+        animation: slideInFromLeft 0.5s ease-out;
+      }
+
+      @keyframes slideInFromLeft {
+        from { transform: translateX(-100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+
+      /* Footer */
+      #unity-footer {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 25px;
+        background: linear-gradient(135deg, rgba(255, 0, 128, 0.2), rgba(0, 255, 128, 0.2));
+        border-radius: 15px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      #unity-build-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #00ffff, #ff0080);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      }
+
+      #unity-fullscreen-button {
+        background: linear-gradient(135deg, #ff0080, #8000ff);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1rem;
+        font-family: 'Exo 2', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 
+          0 0 30px rgba(255, 0, 128, 0.5),
+          inset 0 0 20px rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      #unity-fullscreen-button::before {
+        content: "🚀 Toàn Màn Hình";
+      }
+
+      #unity-fullscreen-button::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
+
+      #unity-fullscreen-button:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 
+          0 0 50px rgba(255, 0, 128, 0.8),
+          inset 0 0 30px rgba(255, 255, 255, 0.2);
+      }
+
+      #unity-fullscreen-button:hover::after {
+        left: 100%;
+      }
+
+      #unity-fullscreen-button:active {
+        transform: translateY(-1px) scale(1.02);
+      }
+
+      /* Holographic particles */
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #00ffff;
+        border-radius: 50%;
+        animation: particleFloat 8s linear infinite;
+        pointer-events: none;
+        z-index: 3;
+        box-shadow: 0 0 10px #00ffff;
+      }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(100vh) translateX(0) scale(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100px) translateX(100px) scale(0);
+          opacity: 0;
+        }
+      }
+
+      /* Neon text effects */
+      .neon-text {
+        color: #00ffff;
+        text-shadow: 
+          0 0 5px #00ffff,
+          0 0 10px #00ffff,
+          0 0 15px #00ffff,
+          0 0 20px #00ffff;
+      }
+
+      /* Mobile responsive */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2.5rem;
+          letter-spacing: 1px;
+        }
+        
+        .header p {
+          font-size: 1rem;
+        }
+        
+        #unity-container {
+          margin: 20px;
+          padding: 25px;
+          border-radius: 15px;
+        }
+        
+        .unity-mobile {
+          width: 100%;
+        }
+        
+        #unity-canvas {
+          width: 100% !important;
+          height: 60vh !important;
+        }
+        
+        #unity-footer {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+        
+        #unity-build-title {
+          font-size: 1.4rem;
+        }
+        
+        .orb {
+          display: none;
+        }
+      }
+
+      /* Scanner line effect */
+      .scanner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #00ffff, transparent);
+        animation: scan 3s linear infinite;
+        z-index: 5;
+      }
+
+      @keyframes scan {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(100vh); opacity: 0; }
+      }
+    </style>
   </head>
   <body>
+    <!-- Glowing orbs -->
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    
+    <!-- Scanner line -->
+    <div class="scanner"></div>
+    
+    <!-- Header -->
+    <div class="header">
+      <h1>⚡ CRAFT FARM ⚡</h1>
+      <p class="neon-text">Future Agricultural Technology</p>
+    </div>
+
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -18,20 +493,15 @@
       </div>
       <div id="unity-warning"> </div>
       <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
+        <div id="unity-logo-title-footer" class="neon-text">🌐 DIGITAL FARM 🌐</div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Craft Farm</div>
+        <div id="unity-build-title">CRAFT FARM</div>
       </div>
     </div>
+
     <script>
       var canvas = document.querySelector("#unity-canvas");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
@@ -40,9 +510,12 @@
         var div = document.createElement('div');
         div.innerHTML = msg;
         warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        if (type == 'error') {
+          div.style = 'background: linear-gradient(135deg, #ff0080, #ff4757); color: white; border-left-color: #ff0080;';
+        } else {
+          if (type == 'warning') {
+            div.style = 'background: linear-gradient(135deg, #ffa726, #ff8f00); color: white; border-left-color: #ffa726;';
+          }
           setTimeout(function() {
             warningBanner.removeChild(div);
             updateBannerVisibility();
@@ -65,39 +538,14 @@
         showBanner: unityShowBanner,
       };
 
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
       } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
         canvas.style.width = "960px";
         canvas.style.height = "600px";
       }
@@ -109,19 +557,75 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+        }).then((unityInstance) => {
+          document.querySelector("#unity-loading-bar").style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
 
       document.body.appendChild(script);
 
+      // Create holographic particles
+      function createParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        
+        const colors = ['#00ffff', '#ff0080', '#00ff80', '#8000ff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.background = color;
+        particle.style.boxShadow = `0 0 10px ${color}`;
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          particle.remove();
+        }, 10000);
+      }
+
+      // Generate particles continuously
+      setInterval(createParticle, 300);
+
+      // Add matrix-style digital rain effect
+      function createDigitalRain() {
+        const chars = '01';
+        const rainDrop = document.createElement('div');
+        rainDrop.innerHTML = chars[Math.floor(Math.random() * chars.length)];
+        rainDrop.style.position = 'absolute';
+        rainDrop.style.color = '#00ff80';
+        rainDrop.style.fontSize = '14px';
+        rainDrop.style.fontFamily = 'monospace';
+        rainDrop.style.left = Math.random() * 100 + 'vw';
+        rainDrop.style.top = '-20px';
+        rainDrop.style.pointerEvents = 'none';
+        rainDrop.style.zIndex = '1';
+        rainDrop.style.opacity = '0.7';
+        rainDrop.style.animation = 'fall 4s linear forwards';
+        
+        document.body.appendChild(rainDrop);
+        
+        setTimeout(() => {
+          rainDrop.remove();
+        }, 4000);
+      }
+
+      // Add fall animation for digital rain
+      const digitalRainStyle = document.createElement('style');
+      digitalRainStyle.innerHTML = `
+        @keyframes fall {
+          to { transform: translateY(100vh); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(digitalRainStyle);
+
+      // Generate digital rain
+      setInterval(createDigitalRain, 100);
     </script>
   </body>
 </html>
